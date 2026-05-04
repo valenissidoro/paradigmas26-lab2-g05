@@ -1,3 +1,5 @@
+import scala.io.Source
+
 // =====================================================================
 // Ejercicio 2: Cargar diccionarios de entidades
 // =====================================================================
@@ -19,7 +21,6 @@
  *   Haskell
  */
 object Dictionary {
-
   /**
    * Lee un archivo de diccionario y crea una lista de entidades del tipo indicado.
    *
@@ -27,6 +28,7 @@ object Dictionary {
    * @param entityType tipo de entidad: "Person", "University", "ProgrammingLanguage", etc.
    * @return lista de NamedEntity del tipo correspondiente
    *
+   
    * TODO (Ejercicio 2): Implementar este método.
    *
    *   Pasos sugeridos:
@@ -38,7 +40,25 @@ object Dictionary {
    *
    */
   def loadFromFile(filePath: String, entityType: String): List[NamedEntity] = {
-    ???
+    val source = Source.fromFile(filePath)
+    try{
+      source.getLines()
+      .toList
+      .map(_.trim)
+      .filter(_.nonEmpty)
+      .map{ line => entityType match {
+            case "Person" => new Person(line)
+            case "University" => new University(line)
+            case "ProgrammingLanguage" => new ProgrammingLanguage(line)
+            case "Organization" => new Organization(line)
+            case "Place" => new Place(line)
+            case _ => throw new IllegalArgumentException(s"Tipo desconocido: $entityType")
+          }
+      }
+    } 
+    finally {
+      source.close()
+    }
   }
 
   /**
@@ -49,7 +69,5 @@ object Dictionary {
    * TODO (Ejercicio 2): Implementar este método.
    *
    */
-  def loadAll(): List[NamedEntity] = {
-    ???
-  }
+  def loadAll(): List[NamedEntity] = ???
 }
