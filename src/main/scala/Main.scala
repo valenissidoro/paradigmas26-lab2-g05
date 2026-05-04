@@ -32,7 +32,19 @@ object Main {
     //   Para cada post:
     //     1. Detectar entidades
     //     2. Formatear y mostrar el resultado
-
+    allPosts.foreach { case (url, titles) => println(s"\nPosts de: $url") 
+      titles.foreach { title =>
+      val entities = Analyzer.detectEntities(title, dictionary)
+      println(s"\nPost: $title")
+      if (entities.isEmpty) {
+        println(" No se detectaron entidades.")
+      } else {
+        entities.foreach { e =>
+          println(s"  ${e.describe}")
+        }
+      }
+    }
+  }
     // ------------------------------------------------------------------
     // Paso 4: Estadísticas globales
     // ------------------------------------------------------------------
