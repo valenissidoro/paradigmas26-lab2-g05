@@ -69,5 +69,13 @@ object Dictionary {
    * TODO (Ejercicio 2): Implementar este método.
    *
    */
-  def loadAll(): List[NamedEntity] = ???
+  def loadAll(): List[NamedEntity] = {
+    List(
+      loadFromFile("data/people.txt", "Person"),
+      loadFromFile("data/universities.txt", "University"),
+      loadFromFile("data/languages.txt", "ProgrammingLanguage"),
+      loadFromFile("data/organizations.txt", "Organization"),
+      loadFromFile("data/places.txt", "Place")
+    ).flatten
+  }
 }
