@@ -35,8 +35,17 @@ object Analyzer {
    *                  )
    */
   def detectEntities(text: String, dictionary: List[NamedEntity]): List[NamedEntity] = {
-    val entity_list = dictionary.filter(entity => text.contains(entity.text))
-    entity_list
+    try
+    { 
+      val entity_list = dictionary.filter(entity => text.contains(entity.text))
+      entity_list
+    }
+    catch
+    {
+      case  e: NullPointerException =>
+      println(s"El texto o el diccionario es Null")
+      List.empty
+    }
   }
 
   /**
