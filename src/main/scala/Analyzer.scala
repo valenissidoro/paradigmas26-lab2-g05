@@ -35,7 +35,8 @@ object Analyzer {
    *                  )
    */
   def detectEntities(text: String, dictionary: List[NamedEntity]): List[NamedEntity] = {
-    ???
+    val entity_list = dictionary.filter(entity => text.contains(entity.text))
+    entity_list
   }
 
   /**
