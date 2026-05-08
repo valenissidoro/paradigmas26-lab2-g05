@@ -35,14 +35,7 @@ object Main {
     allPosts.foreach { case (url, titles) => println(s"\nPosts de: $url") 
       titles.foreach { title =>
       val entities = Analyzer.detectEntities(title, dictionary)
-      println(s"\nPost: $title")
-      if (entities.isEmpty) {
-        println(" No se detectaron entidades.")
-      } else {
-        entities.foreach { e =>
-          println(s"  ${e.describe}")
-        }
-      }
+      print(s"""${Formatters.formatNERResult(title, entities)}""")
     }
   }
     // ------------------------------------------------------------------
@@ -52,6 +45,8 @@ object Main {
     //   1. Recolectar TODAS las entidades detectadas en todos los posts
     //   2. Contar por tipo
     //   3. Mostrar el resumen
+
+
 
   }
 }
