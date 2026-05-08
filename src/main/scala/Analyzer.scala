@@ -70,7 +70,7 @@ object Analyzer {
   def countByType(entities: List[NamedEntity]): Map[String, Int] = {
 
     if (entities.nonEmpty) {
-      val entityCount = entities.groupBy(e => e.describe).view.mapValues(_.length).toMap
+      val entityCount = entities.groupBy(e => e.entityType).view.mapValues(_.length).toMap
       entityCount
     } else {
       val entityCount = Map("Person" -> 0,
