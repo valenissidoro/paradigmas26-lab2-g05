@@ -39,9 +39,7 @@ object Analyzer {
     { 
       val entity_list = dictionary.filter(entity => text.contains(entity.text))
       entity_list
-    }
-    catch
-    {
+    } catch {
       case  e: NullPointerException =>
       println(s"El texto o el diccionario es Null")
       List.empty
@@ -70,6 +68,18 @@ object Analyzer {
    *                 )
    */
   def countByType(entities: List[NamedEntity]): Map[String, Int] = {
-    ???
+
+    if (entities.nonEmpty) {
+      val entityCount = entities.groupBy(e => e.describe).view.mapValues(_.length).toMap
+      entityCount
+    } else {
+      val entityCount = Map("Person" -> 0,
+        "University" -> 0,
+        "ProgrammingLanguage" -> 0,
+        "Organization" -> 0,
+        "Place" -> 0,
+        "Tipo Desconocido" -> 0)
+      entityCount
+    }
   }
 }
