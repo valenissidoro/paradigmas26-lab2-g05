@@ -47,6 +47,17 @@ object Main {
     //   3. Mostrar el resumen
 
 
+    val allEntities =
+      allPosts.flatMap { case (_, titles) =>
+        titles.flatMap { title =>
+          Analyzer.detectEntities(title, dictionary)
+        }
+      }
+
+    val entityCount = Analyzer.countByType(allEntities)
+    println(entityCount)
+
+
 
   }
 }
