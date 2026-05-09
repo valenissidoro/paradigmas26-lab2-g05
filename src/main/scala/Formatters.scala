@@ -60,7 +60,8 @@ object Formatters {
    *     Organization: 2
    *     University: 2
    */
-  def formatEntityStats(counts: Map[String, Int]): String = {
-    ???
+    def formatEntityStats(counts: Map[String, Int]): String = {
+      val entityStats = s"""\n=== Estadística de entidades ===\nPerson: ${counts.getOrElse("Person", 0)}\nProgramminglanguge: ${counts.getOrElse("ProgrammingLanguage", 0)}\nOrganization: ${counts.getOrElse("Organization", 0)}\nUniversity: ${counts.getOrElse("University", 0)}\n"""
+      entityStats
   }
 }
