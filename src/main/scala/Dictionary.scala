@@ -41,12 +41,9 @@ object Dictionary {
    */
   def loadFromFile(filePath: String, entityType: String): List[NamedEntity] = {
     val source = Source.fromFile(filePath)
-    try{
-      source.getLines()
-      .toList
-      .map(_.trim)
-      .filter(_.nonEmpty)
-      .map{ line => entityType match {
+    try {
+      FileIO.readLines(filePath)
+        .map{ line => entityType match {
             case "Person" => new Person(line)
             case "University" => new University(line)
             case "ProgrammingLanguage" => new ProgrammingLanguage(line)
@@ -55,7 +52,11 @@ object Dictionary {
             case _ => throw new IllegalArgumentException(s"Tipo desconocido: $entityType")
           }
       }
-    } 
+    } catch {
+      case e: Exception =>
+        println(s"Fallo la carga del archivo ${filePath}")
+        List.empty
+    }
     finally {
       source.close()
     }
