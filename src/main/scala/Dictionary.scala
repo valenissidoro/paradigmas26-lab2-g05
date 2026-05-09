@@ -41,6 +41,7 @@ object Dictionary {
    */
   def loadFromFile(filePath: String, entityType: String): List[NamedEntity] = {
     val source = Source.fromFile(filePath)
+    
     try {
       FileIO.readLines(filePath)
         .map{ line => entityType match {
