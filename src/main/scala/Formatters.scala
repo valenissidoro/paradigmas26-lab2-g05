@@ -31,17 +31,16 @@ object Formatters {
    *   Si no se detectaron entidades, mostrar un mensaje indicándolo.
    */
   def formatNERResult(postTitle: String, entities: List[NamedEntity]): String = {
-      val title = s"\nPost: \"${postTitle}\"\n"
-      if (entities.isEmpty) {
-        val aux = "\n\u0009(no se encontraron entidades)\n "
-        val matching =  s"\n\u0009${title} ${aux} \n"
-        matching
-      } else {
-        val aux = entities.map(e => ("\n\u0009")++e.describe).mkString("\n")
-        val matching = s"\n\u0009${title} \nEntidades detectadas: \n ${aux} \n"
-        matching
-      }
-
+    val title = s"\nPost: \"${postTitle}\"\n"
+    if (entities.isEmpty) {
+      val aux = "\n\u0009(no se encontraron entidades)\n "
+      val matching =  s"\n\u0009${title} ${aux} \n"
+      matching
+    } else {
+      val aux = entities.map(e => ("\n\u0009")++e.describe).mkString("\n")
+      val matching = s"\n\u0009${title} \nEntidades detectadas: \n ${aux} \n"
+      matching
+    }
   }
 
   /**
@@ -60,8 +59,13 @@ object Formatters {
    *     Organization: 2
    *     University: 2
    */
-    def formatEntityStats(counts: Map[String, Int]): String = {
-      val entityStats = s"""\n=== Estadística de entidades ===\nPerson: ${counts.getOrElse("Person", 0)}\nProgramminglanguge: ${counts.getOrElse("ProgrammingLanguage", 0)}\nOrganization: ${counts.getOrElse("Organization", 0)}\nUniversity: ${counts.getOrElse("University", 0)}\n"""
-      entityStats
+  def formatEntityStats(counts: Map[String, Int]): String = {
+    val entityStats =
+      s"""\n=== Estadística de entidades ===
+        |Person: ${counts.getOrElse("Person", 0)}
+        |Programminglanguge: ${counts.getOrElse("ProgrammingLanguage", 0)}
+        |Organization: ${counts.getOrElse("Organization", 0)}
+        |University: ${counts.getOrElse("University", 0)}\n""".stripMargin
+    entityStats
   }
 }

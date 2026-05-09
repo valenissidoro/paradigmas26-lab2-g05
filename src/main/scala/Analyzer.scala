@@ -40,7 +40,7 @@ object Analyzer {
       val entity_list = dictionary.filter(entity => text.contains(entity.text))
       entity_list
     } catch {
-      case  e: NullPointerException =>
+      case e: NullPointerException =>
       println(s"El texto o el diccionario es Null")
       List.empty
     }
