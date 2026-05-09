@@ -46,6 +46,7 @@ object Dictionary {
       .toList
       .map(_.trim)
       .filter(_.nonEmpty)
+      .filter(s => !s.startsWith("#"))
       .map{ line => entityType match {
             case "Person" => new Person(line)
             case "University" => new University(line)
