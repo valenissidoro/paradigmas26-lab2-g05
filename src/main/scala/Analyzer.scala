@@ -25,16 +25,21 @@ object Analyzer {
    * - i: ignora mayúsculas/minúsculas.
    * - u: hace que el matching sea Unicode-aware.
    *
-   * El lookbehind negativo (?<![\p{L}\p{N}]) exige que antes de la entidad
+   * El lookbehind negativo (?<![\p{L}\p{N}\-_]) exige que antes de la entidad
    * no haya una letra ni un número. Esto evita detectar la entidad dentro
    * de otra palabra.
    *
-   * El lookahead negativo (?![\p{L}\p{N}]) exige lo mismo después de la
+   * El lookahead negativo (?![\p{L}\p{N}\-_]) exige lo mismo después de la
    * entidad: que no continúe inmediatamente con una letra o número.
    *
    * En conjunto, estos bordes permiten matchear la entidad cuando está
    * separada por espacios, signos de puntuación o inicio/fin de texto,
    * pero evitan falsos positivos dentro de palabras más largas.
+   *
+   * \p{L} matchea cualquier letra
+   * \p{N} matchea cualquier número
+   * \- matchea - (se usa \- para escapar el - porque sino se detecta un rango)
+   * _ matecha _
    */
 
   private def entityRegex(entityText: String): scala.util.matching.Regex = {
@@ -45,7 +50,7 @@ object Analyzer {
         .map(Pattern.quote)
         .mkString("\\s+")
 
-    s"(?iu)(?<![\\p{L}\\p{N}])$escaped(?![\\p{L}\\p{N}])".r
+    s"(?iu)(?<![\\p{L}\\p{N}\\-_])$escaped(?![\\p{L}\\p{N}\\-_])".r
   }
 
   /**
