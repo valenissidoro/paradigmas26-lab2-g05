@@ -1,12 +1,52 @@
 // =====================================================================
 // Ejercicios 3 y 5: Detección y conteo de entidades
 // =====================================================================
+import java.util.regex.Pattern
 
 /**
  * Responsable de detectar entidades nombradas en texto libre y
  * producir estadísticas sobre ellas.
  */
 object Analyzer {
+
+  /**
+   * Construye una regex robusta para buscar una entidad dentro del texto.
+   *
+   * La entidad se escapa con Pattern.quote para que caracteres especiales
+   * como ".", "+", "(", ")" o "?" se interpreten literalmente y no como
+   * operadores de regex.
+   *
+   * Los espacios internos de la entidad se reemplazan por "\s+", lo que
+   * permite matchear uno o más espacios, tabs o saltos de línea entre palabras.
+   * Por ejemplo, "San Juan" puede matchear "San Juan", "san   juan" o
+   * "San\nJuan".
+   *
+   * La regex usa los flags (?iu):
+   * - i: ignora mayúsculas/minúsculas.
+   * - u: hace que el matching sea Unicode-aware.
+   *
+   * El lookbehind negativo (?<![\p{L}\p{N}]) exige que antes de la entidad
+   * no haya una letra ni un número. Esto evita detectar la entidad dentro
+   * de otra palabra.
+   *
+   * El lookahead negativo (?![\p{L}\p{N}]) exige lo mismo después de la
+   * entidad: que no continúe inmediatamente con una letra o número.
+   *
+   * En conjunto, estos bordes permiten matchear la entidad cuando está
+   * separada por espacios, signos de puntuación o inicio/fin de texto,
+   * pero evitan falsos positivos dentro de palabras más largas.
+   */
+
+  private def entityRegex(entityText: String): scala.util.matching.Regex = {
+    val escaped =
+      entityText
+        .trim
+        .split("\\s+")
+        .map(Pattern.quote)
+        .mkString("\\s+")
+
+    s"(?iu)(?<![\\p{L}\\p{N}])$escaped(?![\\p{L}\\p{N}])".r
+  }
 
   /**
    * Detecta las entidades del diccionario que aparecen en el texto dado.
@@ -36,9 +76,10 @@ object Analyzer {
    */
   def detectEntities(text: String, dictionary: List[NamedEntity]): List[NamedEntity] = {
     try
-    { 
-      val entity_list = dictionary.filter(entity => text.contains(entity.text))
-      entity_list
+    {
+      val entityList = dictionary.filter { entity =>
+        entityRegex(entity.text).findFirstIn(text).isDefined}
+      entityList
     } catch {
       case e: NullPointerException =>
       println(s"El texto o el diccionario es Null")
