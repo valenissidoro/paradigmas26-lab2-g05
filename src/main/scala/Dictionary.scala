@@ -40,8 +40,7 @@ object Dictionary {
    *
    */
   def loadFromFile(filePath: String, entityType: String): List[NamedEntity] = {
-    val source = Source.fromFile(filePath)
-    
+
     try {
       FileIO.readLines(filePath)
         .map{ line => entityType match {
@@ -57,9 +56,6 @@ object Dictionary {
       case e: Exception =>
         println(s"Fallo la carga del archivo ${filePath}")
         List.empty
-    }
-    finally {
-      source.close()
     }
   }
 
