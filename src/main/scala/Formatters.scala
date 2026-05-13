@@ -68,4 +68,21 @@ object Formatters {
         |University: ${counts.getOrElse("University", 0)}\n""".stripMargin
     entityStats
   }
+    def formatHierarchyStats(counts: Map[String,Map[String, Int]]): String = {
+    val count = counts.toSeq.sortBy{ case (padre, conteo) => -(conteo.values.sum)}
+    val texto_padre = count.map {case (padre, conteo) => 
+      val total_padre = conteo.values.sum 
+      val texto = s"$padre: $total_padre"
+    
+      val hijos = conteo.toSeq.sortBy(-_._2)
+      val texto_hijos = hijos.map{case(hijo, cantidad) => 
+        s"  $hijo: $cantidad"
+        }
+      
+      texto + "\n" + texto_hijos.mkString("\n") 
+    }
+
+    "==== Estaditicas por Jerarquia ===\n" + texto_padre.mkString("\n")
+  }
 }
+
