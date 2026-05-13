@@ -128,4 +128,15 @@ object Analyzer {
       entityCount
     }
   }
+  
+  def countByHierarchy(entities: List[NamedEntity]): Map[String, Map[String, Int]] ={
+    val group_hierarchy = entities.groupBy {
+      case e: Technology => "Technology"
+      case e: Organization => "Organization"
+      case e: Person => "Person"
+      case e: Place => "Place"
+    }
+    val hierarchy_count = group_hierarchy.view.mapValues {entity_list => countByType(entity_list)}.toMap
+    hierarchy_count
+  }
 }
