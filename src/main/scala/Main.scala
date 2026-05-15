@@ -57,5 +57,9 @@ object Main {
     val entityCount = Analyzer.countByType(allEntities)
     val entityStats = Formatters.formatEntityStats(entityCount)
     println(entityStats)
+
+    val hierarchicalCount = Analyzer.countByHierarchy(allEntities)
+    val hierarchicalStats = Formatters.formatHierarchicalEntityStats(entityCount, hierarchicalCount)
+    println(hierarchicalStats)
   }
 }

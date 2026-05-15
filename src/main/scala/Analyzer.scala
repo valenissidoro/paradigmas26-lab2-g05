@@ -78,17 +78,22 @@ object Analyzer {
    *                 )
    */
   def countByType(entities: List[NamedEntity]): Map[String, Int] = {
-    if (entities.nonEmpty) {
-      val entityCount = entities.groupBy(e => e.entityType).view.mapValues(_.length).toMap
-      entityCount
-    } else {
-      val entityCount = Map("Person" -> 0,
-        "University" -> 0,
-        "ProgrammingLanguage" -> 0,
-        "Organization" -> 0,
-        "Place" -> 0,
-        "Tipo Desconocido" -> 0)
-      entityCount
-    }
+    entities.groupBy(e => e.entityType).view.mapValues(_.length).toMap
+  }
+
+  /**
+   * PUNTO ESTRELLA
+   * Cuenta entidades acumulando también por sus tipos padre.
+   *
+   * Una University también cuenta como Organization, y un
+   * ProgrammingLanguage también cuenta como Technology.
+   */
+  def countByHierarchy(entities: List[NamedEntity]): Map[String, Int] = {
+    val directCounts = countByType(entities)
+
+    directCounts ++ Map(
+      "Organization" -> entities.count(e => e.isInstanceOf[Organization]),
+      "Technology" -> entities.count(e => e.isInstanceOf[Technology])
+    )
   }
 }

@@ -60,12 +60,58 @@ object Formatters {
    *     University: 2
    */
   def formatEntityStats(counts: Map[String, Int]): String = {
-    val entityStats =
-      s"""\n=== Estadística de entidades ===
-         |Person: ${counts.getOrElse("Person", 0)}
-         |Programminglanguage: ${counts.getOrElse("ProgrammingLanguage", 0)}
-         |Organization: ${counts.getOrElse("Organization", 0)}
-         |University: ${counts.getOrElse("University", 0)}\n""".stripMargin
-    entityStats
+    val stats =
+      counts.toList
+        .filter { case (_, count) => count > 0 }
+        .sortBy { case (_, count) => -count }
+        .map { case (entityType, count) => s"$entityType: $count" }
+
+    if (stats.isEmpty) {
+      "\n=== Estadísticas de entidades ===\n(sin entidades detectadas)\n"
+    } else {
+      s"\n=== Estadísticas de entidades ===\n${stats.mkString("\n")}\n"
+    }
+  }
+
+  def formatHierarchicalEntityStats(
+      directCounts: Map[String, Int],
+      hierarchicalCounts: Map[String, Int]
+  ): String = {
+    val sections = List(
+      formatHierarchy("Technology", List("ProgrammingLanguage"), directCounts, hierarchicalCounts),
+      formatHierarchy("Organization", List("University"), directCounts, hierarchicalCounts)
+    ).filter(_.nonEmpty)
+
+    if (sections.isEmpty) {
+      "\n=== Estadísticas jerárquicas ===\n(sin entidades detectadas)\n"
+    } else {
+      s"\n=== Estadísticas jerárquicas ===\n${sections.mkString("\n\n")}\n"
+    }
+  }
+
+  private def formatHierarchy(
+      parentType: String,
+      childTypes: List[String],
+      directCounts: Map[String, Int],
+      hierarchicalCounts: Map[String, Int]
+  ): String = {
+    val total = hierarchicalCounts.getOrElse(parentType, 0)
+
+    if (total == 0) {
+      ""
+    } else {
+      val childLines =
+        childTypes
+          .map(childType => childType -> directCounts.getOrElse(childType, 0))
+          .filter { case (_, count) => count > 0 }
+          .map { case (childType, count) => s"  $childType: $count" }
+
+      val directCount = directCounts.getOrElse(parentType, 0)
+      val directLine =
+        if (directCount > 0) List(s"  ($parentType directa): $directCount")
+        else List.empty
+
+      (s"$parentType: $total" :: childLines ::: directLine).mkString("\n")
+    }
   }
 }
