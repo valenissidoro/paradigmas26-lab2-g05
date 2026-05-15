@@ -38,7 +38,23 @@ object Dictionary {
    *
    */
   def loadFromFile(filePath: String, entityType: String): List[NamedEntity] = {
-    ???
+    try {
+      FileIO.readLines(filePath).map{line =>
+        entityType match {
+          case "Person" => new Person(line)
+          case "University" => new University(line)
+          case "Organization" => new Organization(line)
+          case "Place" => new Place(line)
+          case "Technology" => new Technology(line)
+          case "ProgrammingLanguage" => new ProgrammingLanguage(line)
+          case _ => throw new IllegalArgumentException(s"Tipo desconocido: $entityType")
+        }
+      }
+    } catch {
+      case e: Exception =>
+        println(s"Fallo la carga del archivo ${filePath}")
+        List.empty
+    }
   }
 
   /**
@@ -50,6 +66,12 @@ object Dictionary {
    *
    */
   def loadAll(): List[NamedEntity] = {
-    ???
+    List(
+      loadFromFile("data/languages.txt", "ProgrammingLanguage"),
+      loadFromFile("data/organizations.txt", "Organization"),
+      loadFromFile("data/people.txt", "Person"),
+      loadFromFile("data/places.txt", "Place"),
+      loadFromFile("data/universities.txt", "University")
+    ).flatten
   }
 }

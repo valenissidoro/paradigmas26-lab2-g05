@@ -1,3 +1,4 @@
+import java.util.regex.Pattern
 // =====================================================================
 // Ejercicios 3 y 5: Detección y conteo de entidades
 // =====================================================================
@@ -7,6 +8,17 @@
  * producir estadísticas sobre ellas.
  */
 object Analyzer {
+
+  private def entityRegex(entityText: String): scala.util.matching.Regex = {
+    val escaped =
+      entityText
+        .trim
+        .split("\\s+")
+        .map(Pattern.quote)
+        .mkString("\\s+")
+
+    s"(?iu)(?<![\\p{L}\\p{N}\\-_])$escaped(?![\\p{L}\\p{N}\\-_])".r
+  }
 
   /**
    * Detecta las entidades del diccionario que aparecen en el texto dado.
@@ -35,7 +47,13 @@ object Analyzer {
    *                  )
    */
   def detectEntities(text: String, dictionary: List[NamedEntity]): List[NamedEntity] = {
-    ???
+    try {
+      dictionary.filter{ e => entityRegex(e.text).findFirstIn(text).isDefined}
+    } catch {
+      case e: Exception =>
+        println("Falló la detección")
+        List.empty
+    }
   }
 
   /**
@@ -60,6 +78,17 @@ object Analyzer {
    *                 )
    */
   def countByType(entities: List[NamedEntity]): Map[String, Int] = {
-    ???
+    if (entities.nonEmpty) {
+      val entityCount = entities.groupBy(e => e.entityType).view.mapValues(_.length).toMap
+      entityCount
+    } else {
+      val entityCount = Map("Person" -> 0,
+        "University" -> 0,
+        "ProgrammingLanguage" -> 0,
+        "Organization" -> 0,
+        "Place" -> 0,
+        "Tipo Desconocido" -> 0)
+      entityCount
+    }
   }
 }
